@@ -1,0 +1,27 @@
+{
+  "name": "api.altar.gg",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "forever start -t -a --uid \"$npm_package_name\" --pidFile \"~/.pids/$npm_package_name\" src",
+    "stop": "forever stop $npm_package_name",
+    "restart": "npm stop && npm start",
+    "start-dev": "NODE_ENV=\"development\" node src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/altar-gg/api.git"
+  },
+  "author": "altar.gg",
+  "license": "APGL-v3",
+  "bugs": {
+    "url": "https://github.com/altar-gg/api/issues"
+  },
+  "homepage": "https://github.com/altar-gg/api#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "lodash": "^4.17.19"
+  }
+}

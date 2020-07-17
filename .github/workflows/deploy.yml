@@ -1,0 +1,26 @@
+name: Deploy via SSH
+on:
+  push:
+    branches: [ master ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Upload via SCP
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: .
+        remote: ${{ github.repository }}/
+        host: ${{ secrets.PROD_SSH_HOST }}
+        port: ${{ secrets.PROD_SSH_PORT }}
+        username: ${{ secrets.PROD_SSH_USERNAME }}
+        password: ${{ secrets.PROD_SSH_PASSWORD }}
+    - name: ls -a via ssh
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: ls -a
+        host: ${{ secrets.PROD_SSH_HOST }}
+        port: ${{ secrets.PROD_SSH_PORT }}
+        username: ${{ secrets.PROD_SSH_USERNAME }}
+        password: ${{ secrets.PROD_SSH_PASSWORD }}

@@ -16,7 +16,7 @@ module.exports = function (context) {
     app.use(timeout);
     app.use(cors);
 
-    app.use("/v1/users/", require("./users")(context));
+    app.use("/v1/account/", require("./account")(context));
 
     app.use(not_found);
     app.use(catch_error);

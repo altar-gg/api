@@ -3,5 +3,5 @@ module.exports = function (req, res, next) {
         return res.error("timeout", 408);
 
     }, req.context.request_timeout);
-    //next();
+    next();
 }

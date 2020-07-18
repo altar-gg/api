@@ -23,7 +23,7 @@ module.exports = function (context) {
 
     /* 
         GET /v1/account/edit/
-        AUTHED, FLAG("MODIFY_SELF"), CAPTCHA
+        AUTHED, FLAG("MODIFY_SELF"), CAPTCHA, RATELIMIT
 
         Modify currently logged in account.
     */
@@ -53,7 +53,7 @@ module.exports = function (context) {
 
     /* 
         GET /v1/account/:id/
-        AUTHED, FLAG("MODIFY_OTHER_ACCOUNTS"), CAPTCHA
+        AUTHED, FLAG("MODIFY_OTHER_ACCOUNTS"), CAPTCHA, RATELIMIT
 
         Modify another user account.
     */

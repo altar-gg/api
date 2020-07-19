@@ -22,6 +22,8 @@
   "homepage": "https://github.com/altar-gg/api#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "mongoose": "^5.9.25",
+    "passport": "^0.4.1"
   }
 }

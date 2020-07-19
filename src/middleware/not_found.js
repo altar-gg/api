@@ -1,3 +1,3 @@
 module.exports = function (req, res, next) {
-    next(new Error("not found"));
+    res.error("not found", 404, {path: req.url});
 }

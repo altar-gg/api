@@ -1,5 +1,4 @@
-module.exports = function (context) {
-    context.app.use((error, req, res, next) => {
-        res.error(error.message, {...error});
-    });
+module.exports = function (error, req, res, next) {
+    res.error(error.message, {...error});
+    res.end();
 }

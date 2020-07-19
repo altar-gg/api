@@ -8,7 +8,13 @@ if (!development) process.env.NODE_ENV = "production";
 development ? debug.enable("*") : process.env.NODE_ENV = "production";
 const log = debug("master");
 
-const config = require(`../${process.env.NODE_ENV}.config.js`);
+const config = Object.assign({
+    hostname: "localhost",
+    port: 80,
+
+    request_timeout: 5000
+
+}, require(`../${process.env.NODE_ENV}.config.js`));
 
 function fork(old_worker) {
     if (old_worker && old_worker.id) {

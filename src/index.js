@@ -12,6 +12,11 @@ const config = Object.assign({
     hostname: "localhost",
     port: 80,
 
+    captcha: {
+        public: "",
+        private: ""
+    },
+
     request_timeout: 5000
 
 }, require(`../${process.env.NODE_ENV}.config.js`));

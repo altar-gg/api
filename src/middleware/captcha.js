@@ -6,6 +6,10 @@ module.exports = function (options) {
 
     return async function (req, res, next) {
 
+        if (req.context.development) {
+            return next();
+        }
+
         let fetch_url = url + `?secret=${req.context.captcha.private}&response=${req.body.captcha}`;
         fetch(fetch_url, fetch_options).then(async response => {
             let json = await response.json();

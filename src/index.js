@@ -17,6 +17,11 @@ const config = Object.assign({
         private: ""
     },
 
+    mongodb: {
+        url: "",
+        name: ""
+    },
+
     request_timeout: 5000
 
 }, require(`../${process.env.NODE_ENV}.config.js`));

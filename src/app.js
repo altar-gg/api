@@ -1,24 +1,39 @@
+const mongoose = require("mongoose");
 const express = require("express");
 const debug = require("debug");
-
+require("@altar-gg/schemas");
 
 module.exports = function(context) {
 
+    context.mongoose = mongoose;
     context.express = express;
-    context.app = express();
 
     context.log = debug(`worker:${context.cluster.worker.id}`);
 
-    const app = context.app;
-    app.use(express.json());
+    context.log("Connecting to MongoDB...");
+    mongoose.connect(context.mongodb.url, {
+        useNewUrlParser: true, 
+        useUnifiedTopology: true,
+        dbName: context.mongodb.name
+    }).then(() => {
+        let connection = mongoose.connection;
 
-    require("./routes/")(context);
-    
-    app.listen({
-        port: Number.parseInt(context.port), 
-        host: context.hostname
+        context.log("Connected to MongoDB.");
+        context.log(`Using database: ${connection.name}.`);
 
-    }, () => {
-        context.log(`Ready and listening.`);
+        context.app = express();
+        const app = context.app;
+
+        app.use(express.json());
+
+        require("./routes/")(context);
+        
+        app.listen({port: context.port, host: context.hostname}, () => {
+            context.log(`Ready and listening.`);
+        });
+
+    }).catch(error => {
+        context.log(error.message);
+        context.cluster.worker.disconnect();
     });
 }

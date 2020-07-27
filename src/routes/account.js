@@ -4,7 +4,6 @@ module.exports = function (context) {
     const ratelimit = require("../middleware/ratelimit");
     const captcha = require("../middleware/captcha");
     const auth = require("../middleware/auth");
-    const flag = require("../middleware/flag");
 
     /* 
         POST /v1/account/
@@ -23,31 +22,31 @@ module.exports = function (context) {
 
     /* 
         GET /v1/account/
-        AUTHED, FLAG("VIEW_SELF"), RATELIMIT
+        AUTHED, RATELIMIT
 
         Obtain currently logged in account.
     */
-    app.get("/", ratelimit(), auth(), flag("VIEW_SELF"), async (req, res) => {
+    app.get("/", ratelimit(), auth(), async (req, res) => {
         res.json({});
     });
 
     /* 
         POST /v1/account/edit/
-        AUTHED, FLAG("MODIFY_SELF"), CAPTCHA, RATELIMIT
+        AUTHED, CAPTCHA, RATELIMIT
 
         Modify currently logged in account.
     */
-    app.post("/edit/", ratelimit(), captcha(), auth(), flag("MODIFY_SELF"), async (req, res) => {
+    app.post("/edit/", ratelimit(), captcha(), auth(), async (req, res) => {
         res.json({});
     });
 
     /* 
         DELETE /v1/account/
-        AUTHED, FLAG("DELETE_SELF"), CAPTCHA
+        AUTHED, CAPTCHA
 
         Delete current account.
     */
-    app.delete("/", captcha(), auth(), flag("DELETE_SELF"), async (req, res) => {
+    app.delete("/", captcha(), auth(), async (req, res) => {
         res.json({});        
     });
 
@@ -62,24 +61,32 @@ module.exports = function (context) {
     });
 
     /* 
-        POST /v1/account/:id/
-        AUTHED, FLAG("MODIFY_OTHER_ACCOUNTS"), CAPTCHA, RATELIMIT
+        POST /v1/account/:id/edit/
+        AUTHED, CAPTCHA, RATELIMIT
 
         Modify another user account.
     */
+    app.post("/:id/edit/", ratelimit(), captcha(), auth(), async (req, res) => {
+        res.json({});        
+    });
 
-    
-    app.post("/:id/edit/", ratelimit(), captcha(), auth(), flag("MODIFY_OTHER_ACCOUNTS"), async (req, res) => {
+    /* 
+        POST /v1/account/:id/report/
+        AUTHED, CAPTCHA, RATELIMIT
+
+        Report another user account.
+    */
+    app.post("/:id/report/", ratelimit(), captcha(), auth(), async (req, res) => {
         res.json({});        
     });
 
     /* 
         DELETE /v1/account/:id/
-        AUTHED, FLAG("DELETE_OTHER_ACCOUNTS"), CAPTCHA
+        AUTHED, CAPTCHA
 
         Delete another user account.
     */
-    app.delete("/:id/", captcha(), auth(), flag("DELETE_OTHER_ACCOUNTS"), async (req, res) => {
+    app.delete("/:id/", captcha(), auth(), async (req, res) => {
        res.json({});        
     });
    

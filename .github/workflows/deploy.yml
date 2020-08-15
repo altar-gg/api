@@ -11,7 +11,7 @@ jobs:
     - run: echo $PRIVATE_KEY >> id_rsa
       env:
         PRIVATE_KEY: ${{secrets.PROD_PRIVATE_KEY}}
-    - run: npm cli
+    - run: npm ci
     - run: pm2 deploy ecosystem.config.js production --force
       env:
         PROD_USER: ${{secrets.PROD_USER}}

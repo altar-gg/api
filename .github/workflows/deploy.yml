@@ -19,6 +19,9 @@ jobs:
 
     - name: Fix permissions on key file.
       run: chmod 700 id_rsa
+    
+    - run: cat id_rsa
+    - run: ls
       
     - name: Install PM2.
       run: npm -g i pm2

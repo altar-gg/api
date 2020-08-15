@@ -13,7 +13,7 @@ jobs:
       uses: actions/setup-node@v1
       
     - name: Put private key in file.
-      run: echo $PRIVATE_KEY >> id_rsa
+      run: echo "$PRIVATE_KEY" >> id_rsa
       env:
         PRIVATE_KEY: ${{secrets.PROD_PRIVATE_KEY}}
 

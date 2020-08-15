@@ -1,39 +1,24 @@
-const cluster = require('cluster');
-const debug = require("debug");
-const os = require('os');
+"use strict";
 
-const development = process.env.NODE_ENV === "development";
-if (!development) process.env.NODE_ENV = "production";
+import fastify from "fastify";
+import helmet from "fastify-helmet";
+import cors from "fastify-cors";
 
-development ? debug.enable("*") : process.env.NODE_ENV = "production";
-const log = debug("master");
+const app = fastify({logger: true});
 
-const config = Object.assign({
-    hostname: "localhost",
-    port: 80,
+app.register(helmet, {});
+app.register(cors, {
+	origin: [/\.altar\.gg$/]
+});
 
-    request_timeout: 5000
+app.get("/", async () => {
+	return {hello: "world"};
+});
 
-}, require(`../${process.env.NODE_ENV}.config.js`));
-
-function fork(old_worker) {
-    if (old_worker && old_worker.id) {
-        log(`Worker #${old_worker.id} died.`)
-    }
-
-    let worker = cluster.fork();
-    log(`Created worker #${worker.id}.`);
-}
-
-if (cluster.isMaster) {
-    log(`Attempting to host on ${config.hostname}:${config.port}.`);
-
-    if (development) return fork();
-    os.cpus().forEach(fork);
-    
-} else {
-    const context = {development, cluster, ...config};
-	require("./app.js")(context)
-}
-
-cluster.on("exit", fork);
+app.listen(3000, "0.0.0.0", function (err, address) {
+	if (err) {
+		app.log.error(err);
+		process.exit(1);
+	}
+	app.log.info(`server listening on ${address}`);
+});

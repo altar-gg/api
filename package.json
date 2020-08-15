@@ -23,12 +23,14 @@
   "homepage": "https://github.com/altar-gg/api#readme",
   "dependencies": {
     "@altar-gg/schemas": "git+https://github.com/altar-gg/schemas.git",
-    "express": "^4.17.1",
+    "fastify": "^3.2.0",
     "lodash": "^4.17.19",
     "mongoose": "^5.9.25",
     "node-fetch": "^2.6.0",
-    "passport": "^0.4.1",
-    "passport-http": "^0.3.0",
-    "passport-local": "^1.0.0"
+    "pm2": "^4.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.7.0",
+    "eslint-plugin-lodash": "^7.1.0"
   }
 }

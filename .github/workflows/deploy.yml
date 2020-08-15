@@ -12,7 +12,7 @@ jobs:
       env:
         PRIVATE_KEY: ${{secrets.PROD_PRIVATE_KEY}}
     - run: npm ci
-    - run: npm -g pm2
+    - run: npm -g i pm2
     - run: pm2 deploy ecosystem.config.js production --force
       env:
         PROD_USER: ${{secrets.PROD_USER}}

@@ -24,6 +24,8 @@
   "dependencies": {
     "@altar-gg/schemas": "git+https://github.com/altar-gg/schemas.git",
     "fastify": "^3.2.0",
+    "fastify-cors": "^4.1.0",
+    "fastify-helmet": "^5.0.0",
     "lodash": "^4.17.19",
     "mongoose": "^5.9.25",
     "node-fetch": "^2.6.0",

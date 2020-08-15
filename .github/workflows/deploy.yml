@@ -1,4 +1,4 @@
-name: Deploy via SSH
+name: Deployment CI
 on:
   push:
     branches: [ master ]
@@ -7,20 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Upload via SCP
-      uses: garygrossgarten/github-action-scp@release
-      with:
-        local: .
-        remote: ${{ github.repository }}/
-        host: ${{ secrets.PROD_SSH_HOST }}
-        port: ${{ secrets.PROD_SSH_PORT }}
-        username: ${{ secrets.PROD_SSH_USERNAME }}
-        password: ${{ secrets.PROD_SSH_PASSWORD }}
-    - name: ls -a via ssh
-      uses: garygrossgarten/github-action-ssh@release
-      with:
-        command: ls -a
-        host: ${{ secrets.PROD_SSH_HOST }}
-        port: ${{ secrets.PROD_SSH_PORT }}
-        username: ${{ secrets.PROD_SSH_USERNAME }}
-        password: ${{ secrets.PROD_SSH_PASSWORD }}
+    - uses: actions/setup-node@v1
+    - run: echo $PRIVATE_KEY >> id_rsa
+      env:
+        PRIVATE_KEY: ${{secrets.PROD_PRIVATE_KEY}}
+    - run: npm cli
+    - run: pm2 deploy ecosystem.config.js production --force
+      env:
+        PROD_USER: ${{secrets.PROD_USER}}
+        PROD_HOST: ${{secrets.PROD_HOST}}
+        PROD_PATH: ${{secrets.PROD_PATH}}

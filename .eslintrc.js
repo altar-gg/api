@@ -6,7 +6,7 @@ module.exports = {
 	},
 	"extends": [
 		"eslint:recommended",
-		"plugin:react/recommended"
+		"plugin:lodash/canonical"
 	],
 	"parserOptions": {
 		"ecmaVersion": 11,

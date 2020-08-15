@@ -6,14 +6,25 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-    - run: echo $PRIVATE_KEY >> id_rsa
+    - name: Download repository.
+      uses: actions/checkout@v2
+      
+    - name: Install & Setup Node.js.
+      uses: actions/setup-node@v1
+      
+    - name: Put private key in file.
+      run: echo $PRIVATE_KEY >> id_rsa
       env:
         PRIVATE_KEY: ${{secrets.PROD_PRIVATE_KEY}}
-    - run: npm ci
-    - run: npm -g i pm2
-    - run: pm2 deploy ecosystem.config.js production --force
+
+    - name: Fix permissions on key file.
+      run: chmod 700 id_rsa
+      
+    - name: Install PM2.
+      run: npm -g i pm2
+      
+    - name: Deploy via PM2.
+      run: pm2 deploy ecosystem.config.js production --force
       env:
         PROD_USER: ${{secrets.PROD_USER}}
         PROD_HOST: ${{secrets.PROD_HOST}}

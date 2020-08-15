@@ -1,6 +1,8 @@
-import fastify from "fastify";
-import helmet from "fastify-helmet";
-import cors from "fastify-cors";
+"strict mode";
+
+const fastify = require("fastify");
+const helmet = require("fastify-helmet");
+const cors = require("fastify-cors");
 
 const app = fastify({logger: true});
 

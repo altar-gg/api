@@ -1,5 +1,3 @@
-"use strict";
-
 import fastify from "fastify";
 import helmet from "fastify-helmet";
 import cors from "fastify-cors";

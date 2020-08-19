@@ -16,6 +16,10 @@ module.exports = {
 		"lodash"
 	],
 	"rules": {
+
+		// custom rules
+		"lodash/prefer-lodash-method": "off",
+
 		"indent": [
 			"error",
 			"tab"

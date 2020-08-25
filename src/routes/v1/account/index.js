@@ -1,14 +1,11 @@
 module.exports = (app) => {
-	const Account = app.mongoose.model("User");
-	const DetailedAccount = app.mongoose.model("DetailedUser");
-
-	console.log(app.auth, app.basicAuth);
-
+	const Account = app.mongoose.model("account");
+	
 	return {
 		get: {
-			onRequest: app.auth(["basic"]),
+			preHandler: [app.auth(["basic"])],
 			handler: async ({account}) => {
-				return new DetailedAccount(account);
+				return account.toJSON({visibility: "personal"});
 			}
 		},
 
@@ -41,7 +38,7 @@ module.exports = (app) => {
 					return;
 				});
 
-				return new DetailedAccount(account);
+				return account.toJSON({visibility: "personal"});
 			}
 		},
 	};

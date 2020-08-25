@@ -1,6 +1,5 @@
 module.exports = (app) => {
-	const Account = app.mongoose.model("User");
-	const PublicAccount = app.mongoose.model("PublicUser");
+	const Account = app.mongoose.model("account");
 
 	return {
 		get: {
@@ -10,7 +9,7 @@ module.exports = (app) => {
 
 				Account.findOne({[key]: slug}).exec().then(account => {
 					if (!account) return reply.fail("account doesn't exist", 404);
-					reply.send(new PublicAccount(account));
+					reply.send(account.toJSON());
 				});
 			}
 		}

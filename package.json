@@ -34,8 +34,7 @@
     "lodash": "^4.17.20",
     "mongoose": "^5.10.0",
     "node-fetch": "^2.6.0",
-    "pm2": "^4.4.1",
-    "util": "^0.12.3"
+    "pm2": "^4.4.1"
   },
   "devDependencies": {
     "eslint": "^7.7.0",

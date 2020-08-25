@@ -3,7 +3,7 @@ module.exports = (app) => {
 	
 	return {
 		get: {
-			preHandler: [app.auth(["basic"])],
+			preHandler: [app.auth(["bearer"])],
 			handler: async (request, reply) => {
 				reply.send(request.account.toJSON({visibility: "personal"}));
 			}

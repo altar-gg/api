@@ -1,4 +1,5 @@
 const plugify = require("fastify-plugin");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 
@@ -21,12 +22,14 @@ const plugin = async (app) => {
 			if (!request.headers.authorization) return reply.fail("missing authorization header", 401);
 			let array = request.headers.authorization.split(" ");
 
-			let type = _.lowerCase(array.shift(1));
+			let type = array.shift(1).toLowerCase();
 			let tag = array.join(" ");
-            
+
+			if (!types.includes(type)) return reply.fail("unsupported authorization type");
 			if (!_.isFunction(app.auth[type])) return reply.fail("invalid authorization type");
-			request.account = await app.auth[type](tag, request, reply).catch(() => {
-				return reply.fail("invalid authorization");
+
+			request.account = await app.auth[type](tag, request, reply).catch((error) => {
+				return reply.fail(error ? error : "invalid authorization");
 			});
 		};
 		
@@ -52,7 +55,18 @@ const plugin = async (app) => {
 
 			}).catch(reject);
 		});
-	},
+	};
+
+	auth_decorate.bearer = (tag) => {
+		return new Promise ((resolve, reject) => {
+			let json = jwt.verify(tag, process.env.SESSION_SECRET_KEY);
+
+			Account.findOne({_id: json.who}).exec().then(async account => {
+				if (!account) return reject();
+				resolve(account);
+			});
+		});
+	};
     
 	app.decorate("auth", auth_decorate);
 };

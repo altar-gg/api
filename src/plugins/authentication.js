@@ -38,7 +38,7 @@ const plugin = async (app) => {
 			
 			let array = tag.split(":");
 
-			let key = _.lowerCase(array.shift(1));
+			let key = array.shift(1).toLowerCase();
 			let type = key.includes("@") ? "email" : "username";
 			let password = array.join(":");
 

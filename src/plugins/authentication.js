@@ -28,9 +28,12 @@ const plugin = async (app) => {
 			if (!types.includes(type)) return reply.fail("unsupported authorization type");
 			if (!_.isFunction(app.auth[type])) return reply.fail("invalid authorization type");
 
-			request.account = await app.auth[type](tag, request, reply).catch((error) => {
-				return reply.fail(error ? error : "invalid authorization");
+			let account = await app.auth[type](tag, request, reply).catch((error) => {
+				return reply.fail(error ? error : "authorization failed", 401);
 			});
+
+			if (account.disabled) return reply.fail("account disabled", 403);
+			request.account = account;
 		};
 		
 	};
@@ -62,7 +65,9 @@ const plugin = async (app) => {
 			let json = jwt.verify(tag, process.env.SESSION_SECRET_KEY);
 
 			Account.findOne({_id: json.who}).exec().then(async account => {
-				if (!account) return reject();
+				if (!account) return reject("account doesn't exist");
+				//if (!account.sessions.includes(tag)) return reject();
+
 				resolve(account);
 			});
 		});

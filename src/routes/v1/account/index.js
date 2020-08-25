@@ -4,8 +4,8 @@ module.exports = (app) => {
 	return {
 		get: {
 			preHandler: [app.auth(["basic"])],
-			handler: async ({account}) => {
-				return account.toJSON({visibility: "personal"});
+			handler: async (request, reply) => {
+				reply.send(request.account.toJSON({visibility: "personal"}));
 			}
 		},
 
@@ -15,30 +15,16 @@ module.exports = (app) => {
 				let existing = await Account.findOne({$or: [{username}, {email}]}).lean();
 
 				if (existing) {
-					if (existing.username === username) {
-						return reply.fail({
-							message: "account validation failed",
-							multiple: ["`username` already in use."]
-						});
-					}
-
-					if (existing.email === email) {
-						return reply.fail({
-							message: "account validation failed",
-							multiple: ["`email` already in use."]
-						});
-					}
-
-					return;
+					return reply.fail({
+						message: "account validation failed",
+						multiple: ["`username` or `email` already in use."]
+					});
 				}
 
-				let account = new Account(request.body);
-				account = await account.save().catch((error) => {
-					reply.fail(error);
-					return;
-				});
+				Account.create(request.body).then(account => {
+					reply.send(account.toJSON({visibility: "personal"}));
 
-				return account.toJSON({visibility: "personal"});
+				}).catch(reply.fail.bind(this));
 			}
 		},
 	};

@@ -1,8 +1,9 @@
 const plugify = require("fastify-plugin");
+const bcrypt = require("bcrypt");
 const _ = require("lodash");
 
 const plugin = async (app) => {
-	const Account = app.mongoose.model("User");
+	const Account = app.mongoose.model("account");
 
 	const auth_decorate = function (types = ["basic"], realm = "altar") {
 		if (!_.isArray(types)) types = [types];
@@ -41,9 +42,13 @@ const plugin = async (app) => {
 			let type = key.includes("@") ? "email" : "username";
 			let password = array.join(":");
 
-			Account.findOne({[type]: key, password}).exec().then(account => {
-				if (!account) reject();
-				return resolve(account);
+			Account.findOne({[type]: key}).exec().then(async account => {
+				if (!account) return reject();
+
+				bcrypt.compare(password, account.password).then((success) => {
+					if (!success) return reject();
+					resolve(account);
+				});
 
 			}).catch(reject);
 		});

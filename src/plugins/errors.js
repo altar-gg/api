@@ -33,11 +33,14 @@ module.exports = plugin(async function (app) {
 		};
 	}
 
-	app.decorateReply("fail", function (error, status) {
+	app.decorateReply("fail", function (error, status = 400) {
+		if (this.sent) return;
+		
 		if (error.statusCode) this.code(error.statusCode);
 		if (status) this.code(status);
 
 		this.send(make(error));
+		this.raw.end();
 	});
     
 	app.setErrorHandler((error, request, reply) => {

@@ -6,7 +6,6 @@ const _ = require("lodash");
 module.exports = plugin(async function (app) {
 
 	function make (error) {
-
 		let message = error.message;
 		if (_.isString(error)) message = error;
 		error = JSON.parse(JSON.stringify(error));
@@ -19,6 +18,7 @@ module.exports = plugin(async function (app) {
 
 			// Mongoose validation errors.
 			Object.keys(error.errors).forEach(key => {
+				// eslint-disable-next-line security/detect-object-injection
 				let properties = error.errors[key].properties;
 				multiple.push(properties.message.split("Path ").join(""));
 			});

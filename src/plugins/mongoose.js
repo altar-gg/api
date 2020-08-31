@@ -1,11 +1,14 @@
 const plugify = require("fastify-plugin");
 const mongoose = require("mongoose");
-require("@altar-gg/schemas");
+
+//console.log(require("@altar-gg/schemas"));
+const schemas = require("../../../schemas");
 
 const plugin = async (app, opts) => {
 
 	app.decorate("mongoose", mongoose);
-
+	schemas.bind(mongoose);
+	
 	mongoose.connect(opts.url, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true
@@ -17,7 +20,7 @@ const plugin = async (app, opts) => {
 	});
     
 	mongoose.connection.once("open", () => {
-		app.log.info("Mongoose connected");
+		app.log.info("mongoose connected");
 	});
 };
 

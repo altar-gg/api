@@ -6,18 +6,23 @@ const _ = require("lodash");
 const plugin = async (app) => {
 	const Account = app.mongoose.model("account");
 
-	const auth_decorate = function (types = ["basic"], realm = "altar") {
+	const auth_decorate = function (types = ["basic"]) {
 		if (!_.isArray(types)) types = [types];
 
 		types.forEach(type => {
+			console.log({type})
+			type = type.toLowerCase();
+
+
+			// eslint-disable-next-line security/detect-object-injection
 			if (!_.isFunction(app.auth[type])) {
-				app.log.error("invalid authentication type");
+				app.log.error("invalid authentication type uwu");
 				return process.exit(1);
 			}
 		});
         
 		return async (request, reply) => {
-			reply.header("WWW-Authenticate", `${_.capitalize(types[0])} realm="${realm}", charset="UTF-8"`);
+			reply.header("WWW-Authenticate", `${_.capitalize(types[0])} realm="altar", charset="UTF-8"`);
             
 			if (!request.headers.authorization) return reply.fail("missing authorization header", 401);
 			let array = request.headers.authorization.split(" ");
@@ -25,10 +30,11 @@ const plugin = async (app) => {
 			let type = array.shift(1).toLowerCase();
 			let tag = array.join(" ");
 
-			if (!types.includes(type)) return reply.fail("unsupported authorization type");
+			// eslint-disable-next-line security/detect-object-injection
 			if (!_.isFunction(app.auth[type])) return reply.fail("invalid authorization type");
+			if (!types.includes(type)) return reply.fail("unsupported authorization type");
 
-			let account = await app.auth[type](tag, request, reply).catch((error) => {
+			let account = await app.auth.call(tag, request, reply).catch((error) => {
 				return reply.fail(error ? error : "authorization failed", 401);
 			});
 

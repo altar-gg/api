@@ -7,4 +7,4 @@ module.exports = plugin(async function (app) {
 		dir: "./routes"
 	});
 
-}, {name: "routes"});
+}, {name: "routes", dependencies: ["mongoose", "errors", "security"]});

@@ -6,14 +6,16 @@ module.exports = {
 	},
 	"extends": [
 		"eslint:recommended",
-		"plugin:lodash/canonical"
+		"plugin:lodash/canonical",
+		"plugin:security/recommended"
 	],
 	"parserOptions": {
 		"ecmaVersion": 11,
 		"sourceType": "module"
 	},
 	"plugins": [
-		"lodash"
+		"lodash",
+		"security",
 	],
 	"rules": {
 

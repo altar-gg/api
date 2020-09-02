@@ -6,7 +6,6 @@ module.exports = {
 	},
 	"extends": [
 		"eslint:recommended",
-		"plugin:lodash/canonical",
 		"plugin:security/recommended"
 	],
 	"parserOptions": {
@@ -14,13 +13,9 @@ module.exports = {
 		"sourceType": "module"
 	},
 	"plugins": [
-		"lodash",
 		"security",
 	],
 	"rules": {
-
-		// custom rules
-		"lodash/prefer-lodash-method": "off",
 
 		"indent": [
 			"error",

@@ -1,17 +1,18 @@
 const jwt = require("jsonwebtoken");
 
-module.exports = (app) => {
+module.exports = () => {
 	return {
 		get: {
-			preHandler: [app.auth(["basic"])],
-			handler: async (request, reply) => {
+			config: {
+				middleware: ["authentication"],
+				authentication: {methods: ["basic"]}
+			},
 
-				let session = jwt.sign({
-					who: request.account.id,
-					for: ["regular usage"]
-                    
-				}, process.env.SESSION_SECRET_KEY, {
-					issuer: "altar.gg",
+			handler: async (request, reply) => {
+				console.log("reached handler");
+				const body = {who: request.account.id};
+
+				let session = jwt.sign(body, process.env.SESSION_SECRET_KEY, {
 					expiresIn: "2 days"
 				});
 

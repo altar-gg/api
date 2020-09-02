@@ -1,10 +1,13 @@
-const plugin = require("fastify-plugin");
 const autoroutes = require("fastify-autoroutes");
 
-module.exports = plugin(async function (app) {
-    
+module.exports = async function (app) {
 	app.register(autoroutes, {
 		dir: "./routes"
 	});
+};
 
-}, {name: "routes", dependencies: ["mongoose", "errors", "security"]});
+module.exports.name = "routes";
+module.exports.dependencies = ["mongoose", "errors", "security"];
+module.exports.autoConfig = {};
+
+module.exports[Symbol.for("skip-override")] = true;

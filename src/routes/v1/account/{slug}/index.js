@@ -5,26 +5,35 @@ module.exports = (app) => {
 	
 	return {
 		get: {
-			preHandler: [app.auth(["bearer"])],
+			config: {
+				middleware: ["authentication"],
+				authentication: {methods: ["bearer"]}
+			},
+			
 			handler: async (request, reply) => {
 				let {account, params: {slug}} = request;
 
 				if (slug === "*") {
 					// TODO: impl permission check for viewing all users.
-					return reply.send(Account.find({}).lean());
+					return reply.send(await Account.find({}).lean());
 				}
                 
 				if (account.username === slug) slug = "me";         
 				if (slug === "me") return reply.send(account.toJSON({visibility: "personal"}));
 
-				Account.findOne({username: slug}).exec().then(found => {
+				await Account.findOne({username: slug}).exec().then(found => {
 					if (!found) return reply.fail("account doesn't exist", 404);
-					reply.send(found.toJSON());
+					return reply.send(found.toJSON());
 				});
 			}
 		},
 
 		post: {
+			config: {
+				middleware: ["authentication"],
+				authentication: {methods: ["bearer"]}
+			},
+
 			schema: {
 				body: {
 					type: "object",
@@ -37,7 +46,6 @@ module.exports = (app) => {
 				}
 			},
 
-			preHandler: [app.auth(["bearer"])],
 			handler: async (request, reply) => {
 				let {account, params: {slug}, body} = request;
                 

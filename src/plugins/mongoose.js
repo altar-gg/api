@@ -1,11 +1,9 @@
-const plugify = require("fastify-plugin");
 const mongoose = require("mongoose");
 
 //console.log(require("@altar-gg/schemas"));
 const schemas = require("../../../schemas");
 
-const plugin = async (app, opts) => {
-
+module.exports = async (app, opts) => {
 	app.decorate("mongoose", mongoose);
 	schemas.bind(mongoose);
 	
@@ -24,8 +22,11 @@ const plugin = async (app, opts) => {
 	});
 };
 
-plugin.autoConfig = {
+module.exports.name = "mongoose";
+module.exports.dependencies = [];
+module.exports.autoConfig = {
 	url: process.env.MONGOOSE_URL
 };
 
-module.exports = plugify(plugin, {name: "mongoose"});
+module.exports[Symbol.for("skip-override")] = true;
+

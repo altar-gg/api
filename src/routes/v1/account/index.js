@@ -3,7 +3,11 @@ module.exports = (app) => {
 	
 	return {
 		get: {
-			preHandler: [app.auth(["bearer"])],
+			config: {
+				middleware: ["authentication"],
+				authentication: {methods: ["bearer"]}
+			},
+
 			handler: async ({account}, reply) => {
 				reply.send(account.toJSON({visibility: "personal"}));
 			}

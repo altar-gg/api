@@ -1,13 +1,8 @@
-/* eslint-disable no-prototype-builtins */
-
-const plugin = require("fastify-plugin");
-const _ = require("lodash");
-
-module.exports = plugin(async function (app) {
+module.exports = async function (app) {
 
 	function make (error) {
 		let message = error.message;
-		if (_.isString(error)) message = error;
+		if (typeof error === "string") message = error;
 		error = JSON.parse(JSON.stringify(error));
 
 		if (error._message) message = error._message;
@@ -55,4 +50,10 @@ module.exports = plugin(async function (app) {
 			done();
 		}
 	});
-}, {name: "errors"});
+};
+
+module.exports.name = "errors";
+module.exports.dependencies = [];
+module.exports.autoConfig = {};
+
+module.exports[Symbol.for("skip-override")] = true;

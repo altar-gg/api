@@ -2,7 +2,7 @@ module.exports = () => {
 	return {
 		get: {
 			handler: async (request, reply) => {
-				reply.send(process.env);
+				reply.fail(null, 404, true);
 			}
 		}
 	};

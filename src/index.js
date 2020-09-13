@@ -22,4 +22,6 @@ app.listen(3000, "0.0.0.0", (err) => {
 		app.log.error(err);
 		process.exit(1);
 	}
+
+	console.log(app.printRoutes());
 });

@@ -3,25 +3,23 @@ const bcrypt = require("bcrypt");
 const _ = require("lodash");
 
 module.exports = async (app) => {
-	const Account = app.mongoose.model("account");
+	const User = app.mongoose.model("user");
 
 	const types = {
 		basic: (tag) => {
 			return new Promise ((resolve, reject) => {
 				tag = Buffer.from(tag, "base64").toString("utf-8");
-				
 				let array = tag.split(":");
 	
-				let key = array.shift(1).toLowerCase();
-				let type = key.includes("@") ? "email" : "username";
+				let name = array.shift(1).toLowerCase();
 				let password = array.join(":");
 	
-				Account.findOne({[type]: key}).exec().then(async account => {
-					if (!account) return reject();
+				User.fromName(name).exec().then(async user => {
+					if (!user) return reject("user not found");
 	
-					bcrypt.compare(password, account.password).then((success) => {
-						if (!success) return reject();
-						resolve(account);
+					bcrypt.compare(password, user.password).then((success) => {
+						if (!success) return reject("invalid password");
+						resolve(user);
 					});
 	
 				}).catch(reject);
@@ -32,11 +30,11 @@ module.exports = async (app) => {
 			return new Promise ((resolve, reject) => {
 				let json = jwt.verify(tag, process.env.SESSION_SECRET_KEY);
 	
-				Account.findOne({_id: json.who}).exec().then(async account => {
-					if (!account) return reject("account doesn't exist");
-					//	if (!account.sessions.includes(tag)) return reject();
+				User.fromUUID(json.who).exec().then(async user => {
+					if (!user) return reject();
+					//	if (!user.sessions.includes(tag)) return reject();
 	
-					resolve(account);
+					resolve(user);
 				});
 			});
 		}
@@ -55,12 +53,12 @@ module.exports = async (app) => {
 			if (!methods.includes(method)) return reply.fail("unsupported authorization method");
             
 			// eslint-disable-next-line security/detect-object-injection
-			let account = await types[method](tag).catch((error) => {
+			let user = await types[method](tag).catch((error) => {
 				return reply.fail(error ? error : "authorization failed", 401);
 			});
-    
-			if (account.disabled) return reply.fail("account disabled", 403);
-			request.account = account;
+
+			if (user.disabled) return reply.fail("user disabled", 403);
+			request.user = user;
 		};
 	};
 };

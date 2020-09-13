@@ -9,7 +9,8 @@ module.exports = async (app, opts) => {
 	
 	mongoose.connect(opts.url, {
 		useNewUrlParser: true,
-		useUnifiedTopology: true
+		useUnifiedTopology: true,
+		useCreateIndex: true
 	});
     
 	mongoose.connection.on("error", (err) => {
@@ -19,6 +20,7 @@ module.exports = async (app, opts) => {
     
 	mongoose.connection.once("open", () => {
 		app.log.info("mongoose connected");
+		//mongoose.connection.dropDatabase();
 	});
 };
 

@@ -5,17 +5,17 @@ module.exports = async function (app) {
 		if (typeof error === "string") message = error;
 		error = JSON.parse(JSON.stringify(error));
 
-		if (error._message) message = error._message;
-		message = message.toLowerCase();
+		if (error?._message) message = error._message;
+		message = message.toLowerCase() || "an unknown error";
 
 		let multiple = error.errors ? [] : error.multiple;
-		if (error.errors) {
+		if (error?.errors) {
 
 			// Mongoose validation errors.
 			Object.keys(error.errors).forEach(key => {
 				// eslint-disable-next-line security/detect-object-injection
 				let properties = error.errors[key].properties;
-				multiple.push(properties.message.split("Path ").join(""));
+				if (properties?.message) multiple.push(properties.message.split("Path ").join(""));
 			});
 		}
 
@@ -28,13 +28,17 @@ module.exports = async function (app) {
 		};
 	}
 
-	app.decorateReply("fail", function (error, status = 400) {
+	app.decorateReply("fail", function (error, status = 400, empty = false) {
 		if (this.sent) return;
 		
 		if (error.statusCode) this.code(error.statusCode);
 		if (status) this.code(status);
 
-		this.send(make(error));
+		if (!empty) this.send(make(error));
+		if (!error && empty) {
+			this.sent = true;
+		}
+		
 		this.raw.end();
 	});
     
@@ -43,11 +47,8 @@ module.exports = async function (app) {
 	});
     
 	app.setNotFoundHandler({
-		preHandler: (request, reply, done) => {
-			reply.send(make("Not found"));
-			reply.code(404);
-            
-			done();
+		preHandler: (request, reply) => {
+			reply.fail("not found", 404);
 		}
 	});
 };

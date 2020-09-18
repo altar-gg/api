@@ -40,11 +40,15 @@ module.exports = async (app) => {
 		}
 	};
 
-	app.middleware["authentication"] = ({methods}) => {
+	app.middleware["authentication"] = ({methods, optional}) => {
 		return async (request, reply) => {
 			reply.header("WWW-Authenticate", `${_.capitalize(types[0])} realm="altar", charset="UTF-8"`);
             
-			if (!request.headers.authorization) return reply.fail("missing authorization header", 401);
+			if (!request.headers.authorization) {
+				if (!optional) return reply.fail("missing authorization header", 401);
+				return;
+			}
+
 			let array = request.headers.authorization.split(" ");
     
 			let method = array.shift(1).toLowerCase();

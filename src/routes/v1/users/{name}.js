@@ -8,13 +8,16 @@ module.exports = (app) => {
 		get: {
 			config: {
 				middleware: ["authentication"],
-				authentication: {methods: ["bearer"]}
+				authentication: {
+					methods: ["bearer"],
+					optional: true
+				}
 			},
 			
 			handler: async (request, reply) => {
 				let {user, params: {name}} = request;
 
-				let self = name === user.name;
+				let self = name === user?.name;
 				let promise = self ? Promise.resolve(user) :  User.fromName(name).exec(); 
 				await promise.then(async found => {
 					if (!found) return reply.fail("user doesn't exist", 404);

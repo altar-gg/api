@@ -5,7 +5,7 @@ module.exports = async function (app) {
 
 	app.register(helmet, {});
 	app.register(cors, {
-		origin: [/\.altar\.gg$/]
+		origin: true
 	});
     
 };
